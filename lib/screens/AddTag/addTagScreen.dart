@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:extract_flutter/services/repositories/TagRepository.dart';
 
 class AddTagScreen extends StatefulWidget {
-  AddTagScreen(this.tags, this.onSaveTags);
+  AddTagScreen(this.tags);
 
   final List<Tag> tags;
-  final void Function(List<Tag>) onSaveTags;
 
   @override
   _AddTagScreenState createState() => _AddTagScreenState();
@@ -39,7 +38,6 @@ class _AddTagScreenState extends State<AddTagScreen> {
 
   @override
   void dispose() {
-    widget.onSaveTags(_selectedTags);
     super.dispose();
   }
 
@@ -133,7 +131,10 @@ class _AddTagScreenState extends State<AddTagScreen> {
                 _fetchTagsFromDatabase();
                 if (result > 0) {
                   tag.id = result;
-                  _selectedTags.add(tag);
+                  setState(() {
+                    _selectedTags.add(tag);
+                    _textEditingController.text = '';
+                  });
                   _showSnackbar("Tag criada com sucesso!");
                 }
                 else {

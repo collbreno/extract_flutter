@@ -19,6 +19,7 @@ class NewExpenseScreen extends StatefulWidget {
 class _NewExpenseScreenState extends State<NewExpenseScreen> {
 
   
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   ExpenseRepository _expenseReporitory = ExpenseRepository();
   CategoryRepository _categoryRepository = CategoryRepository();
   List<Tag> _selectedTags = List<Tag>();
@@ -37,6 +38,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
     }
     return MaterialApp(
       home: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           automaticallyImplyLeading: true,
           title: Text('Novo gasto'),
@@ -61,6 +63,20 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
     );
   }
 
+  void _insertCategory() async {
+    var expenseToInsert = Expense(_value, _selectedDate, _descriptionController.text, _selectedCategory, _selectedTags);
+    var result = await _expenseReporitory.insertExpense(expenseToInsert);
+    if (result != null && result > 0){
+      resetFields();
+      SnackBar snackbar = SnackBar(content: Text("Gasto criado com sucesso"),);
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+    }
+    else {
+      SnackBar snackbar = SnackBar(backgroundColor: Colors.red, content: Text("Algo deu errado ao criar gasto", style: TextStyle(color: Colors.white),),);
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+    }
+  }
+
   Widget renderSaveButton(){
     return Center(
       child: Padding(
@@ -68,11 +84,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
         child: RaisedButton(
           color: Colors.blue,
           child: Text("Salvar".toUpperCase(), style: TextStyle(color: Colors.white),),
-          onPressed: () async {
-            var expenseToInsert = Expense(_value, _selectedDate, _descriptionController.text, _selectedCategory, _selectedTags);
-            var result = await _expenseReporitory.insertExpense(expenseToInsert);
-            print(result);
-          },
+          onPressed: () => _insertCategory(),
         ),
       ),
     );
@@ -142,14 +154,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
   Widget renderTagButton(BuildContext context) {
     return ListTile(
       title: Text("Tags"),
-      onTap: () => AppNavigator.pushAddTagScreen(context, 
-        tags: _selectedTags,
-        onSaveTags: (tags){
-          setState(() {
-           _selectedTags = tags; 
-          });
-        }
-      ),
+      onTap: () => AppNavigator.pushAddTagScreen(context, _selectedTags),
       leading: Icon(Icons.label),
       trailing: Text("Editar"),
     );
@@ -179,6 +184,16 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
       leading: Icon(Icons.calendar_today),
         trailing: Icon(Icons.arrow_drop_down),
     );
+  }
+
+  void resetFields(){
+    setState(() {
+      _value = 0;
+     _descriptionController.text = '';
+     _selectedCategory = null;
+     _selectedTags = List<Tag>();
+     _selectedDate = DateTime.now(); 
+    });
   }
 
   void _showDatePicker(){

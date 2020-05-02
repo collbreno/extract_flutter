@@ -16,9 +16,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final screenTitle = "Nova Categoria";
 
   CategoryRepository _categoryRepository = CategoryRepository();
-  Color selectedColor = Colors.red;
-  IconData selectedIcon = Icons.ac_unit;
-  TextEditingController titleController = TextEditingController();
+  Color _selectedColor = Colors.blue;
+  IconData _selectedIcon = Icons.ac_unit;
+  TextEditingController _titleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     return AppBar(
       automaticallyImplyLeading: true,
       title: Hero(tag: screenTitle.toUpperCase(), child: Text(screenTitle, textAlign: TextAlign.left, style: TextStyle(color: Colors.white, decoration: TextDecoration.none, fontSize: 20),),),
-      backgroundColor: selectedColor,
+      backgroundColor: _selectedColor,
     );
   }
 
@@ -51,8 +51,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     return Padding(
       padding: EdgeInsets.symmetric( horizontal: 12, vertical: 5 ),
       child: TextField(
-        controller: titleController,
-        cursorColor: selectedColor,
+        controller: _titleController,
+        cursorColor: _selectedColor,
         decoration: InputDecoration(
           icon: Icon(Icons.edit),
           labelText: 'Nome',
@@ -74,18 +74,18 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             items: materialIconList.values.toList(),
             onItemSelected: (icon){
               setState(() {
-                selectedIcon = icon; 
+                _selectedIcon = icon; 
               });
             },
             title: "Selecione o ícone",
             renderer: (icon){
-              return (Center(child: Icon(icon, color: selectedColor,),));
+              return (Center(child: Icon(icon, color: _selectedColor,),));
             },
           )
         );
       },
       leading: Icon(Icons.image),
-      trailing: Icon(selectedIcon, color: selectedColor,),
+      trailing: Icon(_selectedIcon, color: _selectedColor,),
       title: Text("Selecione o ícone"),
     );
   }
@@ -102,7 +102,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             items: MaterialColors.getAllColorAndTones(),
             onItemSelected: (color){
               setState(() {
-                selectedColor = color; 
+                _selectedColor = color; 
               });
             },
             renderer: (color){
@@ -121,35 +121,41 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         );
       },
       leading: Icon(Icons.color_lens),
-      trailing: Container(width: 20, height: 20, decoration: ShapeDecoration(shape: CircleBorder(), color: selectedColor),),
+      trailing: Container(width: 20, height: 20, decoration: ShapeDecoration(shape: CircleBorder(), color: _selectedColor),),
       title: Text("Selecione a cor"),
     );
+  }
+
+  void _insertCategory() async {
+    int response = await _categoryRepository.insertCategory(Category(_titleController.text, _selectedColor, _selectedIcon));
+    if (response != null && response > 0){
+      _resetFields();
+      SnackBar snackbar = SnackBar(content: Text("Categoria criada com sucesso"),);
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+    }
+    else {
+      SnackBar snackbar = SnackBar(backgroundColor: Colors.red, content: Text("Algo deu errado ao criar categoria", style: TextStyle(color: Colors.white),),);
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+    }
+  }
+
+  void _resetFields(){
+    setState(() {
+     _titleController.text = '';
+     _selectedColor = Colors.blue;
+     _selectedIcon = Icons.ac_unit;
+    });
   }
   
   Widget renderSaveButton(){
     return Padding(
       padding: EdgeInsets.only(top: 30),
       child: RaisedButton(
-        color: selectedColor,
-        onPressed: () async{
-          int response = await _categoryRepository.insertCategory(Category(titleController.text, selectedColor, selectedIcon));
-          if (response > 0) {
-            showSnackbar("Categoria criada com sucesso!");
-            setState(() {
-              titleController.text = '';
-              selectedColor = Colors.red;
-              selectedIcon = Icons.ac_unit;
-            });
-          }
-          else showSnackbar("Erro ao criar categoria.");
-        },
+        color: _selectedColor,
+        onPressed: () => _insertCategory(),
         child: Text("Salvar".toUpperCase()),
       ),
     );
   }
 
-  void showSnackbar(String text) {
-    final snackbar = SnackBar(content: Text(text),);
-    _scaffoldKey.currentState.showSnackBar(snackbar);
-  }
 }

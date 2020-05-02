@@ -11,8 +11,9 @@ class ExpenseRepository {
   Future<int> insertExpense(Expense expense) async {
     Database db = await _dbHelper.database;
     int result;
-    db.transaction((txn) async{
+    await db.transaction((txn) async{
       result = await txn.insert(ExpenseTable.tableName, expense.toMap());
+      print('insert expense => '+result.toString());
       expense.id = result;
       await Future.forEach(expense.getMapWithTagIds(), (map) async {
         await txn.insert(ExpenseTagsTable.tableName, map);
