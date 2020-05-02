@@ -24,8 +24,8 @@ class DbHelper {
   }
 
   Future<Database> _initializeDb() async {
-    Directory dir = await getApplicationDocumentsDirectory();
-    String path = dir.path + "extract.db";
+    String dirPath = await getDatabasesPath();
+    String path = dirPath + "/extract.db";
     var extractDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
     return extractDatabase;
   }
