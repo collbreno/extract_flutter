@@ -1,3 +1,5 @@
+import 'package:extract_flutter/components/ExpenseCard.dart';
+import 'package:extract_flutter/models/Expense.dart';
 import 'package:extract_flutter/services/repositories/ExpenseRepository.dart';
 import 'package:flutter/material.dart';
 
@@ -10,12 +12,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   final title = "Histórico";
   int _count = 0;
+  List<Expense> _expenses = List<Expense>();
   ExpenseRepository _expenseRepository = ExpenseRepository();
 
   @override
   void initState() {
     super.initState();
-    _fetchAmmount();
+    _fetchFromDatabase();
   }
 
   @override
@@ -24,17 +27,23 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: AppBar(
         title: Hero(tag: title.toUpperCase(), child: Text(title, textAlign: TextAlign.left, style: TextStyle(color: Colors.white, decoration: TextDecoration.none, fontSize: 20),),),
       ),
-      body: Center(
-        child: Text(_count.toString()),
+      body: ListView.builder(
+        itemCount: _expenses.length,
+        itemBuilder: (context, index){
+          return ExpenseCard(_expenses.elementAt(index));
+        },
       ),
     );
   }
 
-  void _fetchAmmount(){
-    _expenseRepository.getExpensesAmmount().then((value) => {
-      setState((){
-        _count = value;
-      })
+  void _fetchFromDatabase(){
+    _expenseRepository.getExpenses().then((expenses){
+      expenses.forEach((e){
+        print(e.toMap());
+      });
+      setState(() {
+       _expenses = expenses; 
+      });
     });
   }
 }

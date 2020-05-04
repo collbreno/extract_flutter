@@ -1,5 +1,5 @@
 import 'package:extract_flutter/components/PickerDialog.dart';
-import 'package:extract_flutter/models/category.dart';
+import 'package:extract_flutter/models/Category.dart';
 import 'package:extract_flutter/services/colors.dart';
 import 'package:extract_flutter/services/icons.dart';
 import 'package:extract_flutter/services/repositories/CategoryRepository.dart';

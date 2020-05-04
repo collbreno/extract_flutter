@@ -1,4 +1,4 @@
-import 'package:extract_flutter/models/category.dart';
+import 'package:extract_flutter/models/Category.dart';
 import 'package:extract_flutter/services/database/tables/CategoryTable.dart';
 import 'package:extract_flutter/services/database/dbHelper.dart';
 import 'package:sqflite/sqflite.dart';

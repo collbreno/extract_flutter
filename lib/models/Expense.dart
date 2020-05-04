@@ -1,8 +1,7 @@
-import 'package:extract_flutter/models/category.dart';
+import 'package:extract_flutter/models/Category.dart';
 import 'package:extract_flutter/models/Tag.dart';
 import 'package:extract_flutter/services/database/tables/ExpenseTable.dart';
 import 'package:extract_flutter/services/database/tables/ExpenseTagsTable.dart';
-import 'package:flutter/material.dart';
 
 class Expense {
   int _id;
@@ -15,7 +14,20 @@ class Expense {
   Expense(this._value, this._date, this._description, this._category, this._tags);
   Expense.withId(this._id, this._value, this._date, this._description, this._category, this._tags);
   Expense.fromObject(dynamic o){
+    _id = o[ExpenseTable.colCategoryId];
+    _value = o[ExpenseTable.colValue];
+    _description = o[ExpenseTable.colDescription];
+    _date = DateTime.parse(o[ExpenseTable.colDate]);
+    _tags = List<Tag>();
+  }
 
+  Expense.fromObjectWithCategory(dynamic o){
+    _id = o[ExpenseTable.colId];
+    _value = o[ExpenseTable.colValue];
+    _description = o[ExpenseTable.colDescription];
+    _date = DateTime.parse(o[ExpenseTable.colDate]);
+    _category = Category.fromObject(o);
+    _tags = List<Tag>();
   }
 
   int get id => _id;

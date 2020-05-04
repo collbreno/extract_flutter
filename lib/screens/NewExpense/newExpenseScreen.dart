@@ -3,13 +3,12 @@ import 'package:extract_flutter/components/PickerDialog.dart';
 import 'package:extract_flutter/components/TagChip.dart';
 import 'package:extract_flutter/models/Expense.dart';
 import 'package:extract_flutter/models/Tag.dart';
-import 'package:extract_flutter/models/category.dart';
+import 'package:extract_flutter/models/Category.dart';
 import 'package:extract_flutter/services/navigator.dart';
 import 'package:extract_flutter/services/repositories/CategoryRepository.dart';
 import 'package:extract_flutter/services/repositories/ExpenseRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 class NewExpenseScreen extends StatefulWidget {
   @override
@@ -31,7 +30,6 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    initializeDateFormatting('pt_BR');
     if (_categories == null) {
       _categories = List<Category>();
       getData();
@@ -113,12 +111,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
         children: _selectedTags.map((tag){
           return Padding(
             padding: EdgeInsets.all(2),
-            child: TagChip(
-                title: tag.title,
-                color: tag.color,
-                textColor: tag.textColor,
-                icon: tag.icon,
-            ),
+            child: TagChip(tag),
           );
         }).toList(),
       ),

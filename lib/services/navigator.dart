@@ -1,5 +1,7 @@
+import 'package:extract_flutter/models/Expense.dart';
 import 'package:extract_flutter/models/Tag.dart';
 import 'package:extract_flutter/screens/AddTag/addTagScreen.dart';
+import 'package:extract_flutter/screens/ExpenseDetail/expenseDetailScreen.dart';
 import 'package:extract_flutter/screens/History/historyScreen.dart';
 import 'package:extract_flutter/screens/NewCategory/newCategoryScreen.dart';
 import 'package:extract_flutter/screens/NewExpense/newExpenseScreen.dart';
@@ -18,7 +20,11 @@ class AppNavigator {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => HistoryScreen()));
   }
 
-  static void pushAddTagScreen(BuildContext context,List<Tag> tags){
+  static void pushAddTagScreen(BuildContext context, List<Tag> tags){
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTagScreen(tags)));
+  }
+
+  static void pushDetailTagScreen(BuildContext context, Expense expense){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExpenseDetailScreen(expense)));
   }
 }

@@ -31,12 +31,7 @@ class _NewTagDialogState extends State<NewTagDialog> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: 24, bottom: 6),
-            child: TagChip(
-              color: _selectedColor,
-              textColor: _selectedTextColor,
-              title: widget.title,
-              icon: _selectedIcon,
-            ),
+            child: TagChip(Tag(widget.title, _selectedColor, _selectedTextColor, _selectedIcon)),
           ),
           ListTile(
             onTap: () => showColorPicker(context, false),

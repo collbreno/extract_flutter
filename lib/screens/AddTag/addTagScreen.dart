@@ -167,12 +167,7 @@ class _AddTagScreenState extends State<AddTagScreen> {
             });
           }
         },
-        title: TagChip(
-          title: tag.title,
-          color: tag.color,
-          textColor: tag.textColor,
-          icon: tag.icon,
-        ),
+        title: TagChip(tag),
         trailing: Icon(isSelected? Icons.check : null),
       ),
     );
