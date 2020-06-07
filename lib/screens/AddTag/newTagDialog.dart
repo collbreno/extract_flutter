@@ -74,11 +74,11 @@ class _NewTagDialogState extends State<NewTagDialog> {
       barrierDismissible: false,
       context: context,
       builder: (context){
-        return PickerDialog<IconData>(
-          items: materialIconList.values.toList(),
-          onItemSelected: (icon){
+        return PickerDialog<MapEntry<String, IconData>>(
+          items: materialIconList.entries.toList(),
+          onItemSelected: (entry){
             setState(() {
-             _selectedIcon = icon; 
+             _selectedIcon = entry.value;
             });
           },
           title: "Selecione o ícone",
@@ -88,11 +88,12 @@ class _NewTagDialogState extends State<NewTagDialog> {
              _selectedIcon = null; 
             });
           },
-          renderer: (icon){
+          onSearch: (entry, text) => entry.key.contains(text),
+          renderer: (entry){
             return Container(
                   child: Padding(
                     padding: EdgeInsets.all(10),
-                    child: Icon(icon, color: _selectedTextColor,),
+                    child: Icon(entry.value, color: _selectedTextColor,),
                   ),
                   decoration: ShapeDecoration(
                     color: _selectedColor,

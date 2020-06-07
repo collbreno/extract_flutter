@@ -43,4 +43,9 @@ class Tag {
     }
     return map;
   }
+
+  @override
+  String toString() {
+    return "id: $id, title: $title";
+  }
 }

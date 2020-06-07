@@ -20,8 +20,8 @@ class AppNavigator {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => HistoryScreen()));
   }
 
-  static void pushAddTagScreen(BuildContext context, List<Tag> tags){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTagScreen(tags)));
+  static void pushAddTagScreen(BuildContext context, List<Tag> tags, void Function(List<Tag>) onUpdate){
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTagScreen(tags, onUpdate)));
   }
 
   static void pushDetailTagScreen(BuildContext context, Expense expense){

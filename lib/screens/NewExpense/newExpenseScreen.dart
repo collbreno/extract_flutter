@@ -16,10 +16,8 @@ class NewExpenseScreen extends StatefulWidget {
 }
 
 class _NewExpenseScreenState extends State<NewExpenseScreen> {
-
-  
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  ExpenseRepository _expenseReporitory = ExpenseRepository();
+  ExpenseRepository _expenseRepository = ExpenseRepository();
   CategoryRepository _categoryRepository = CategoryRepository();
   List<Tag> _selectedTags = List<Tag>();
   List<Category> _categories;
@@ -27,6 +25,12 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
   TextEditingController _descriptionController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   int _value = 0;
+
+  @override
+  void didUpdateWidget(NewExpenseScreen oldWidget) {
+    print('atualizei');
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,74 +45,80 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
           automaticallyImplyLeading: true,
           title: Text('Novo gasto'),
         ),
-        body: Padding(
+        body: ListView(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              renderValueButton(),
-              renderCategoryButton(),
-              renderDateButton(),
-              renderDescriptionText(),
-              renderTagButton(context),
-              renderTagList(context),
-              renderSaveButton(),
-            ],
-          ),
-        ) 
+          children: <Widget>[
+            renderValueButton(),
+            renderCategoryButton(),
+            renderDateButton(),
+            renderDescriptionText(),
+            renderTagButton(context),
+            renderTagList(context),
+            renderSaveButton(),
+          ],
+        ),
       ),
     );
   }
 
   void _insertCategory() async {
-    var expenseToInsert = Expense(_value, _selectedDate, _descriptionController.text, _selectedCategory, _selectedTags);
-    var result = await _expenseReporitory.insertExpense(expenseToInsert);
-    if (result != null && result > 0){
+    var expenseToInsert = Expense(_value, _selectedDate,
+        _descriptionController.text, _selectedCategory, _selectedTags);
+    var result = await _expenseRepository.insertExpense(expenseToInsert);
+    if (result != null && result > 0) {
       resetFields();
-      SnackBar snackbar = SnackBar(content: Text("Gasto criado com sucesso"),);
+      SnackBar snackbar = SnackBar(
+        content: Text("Gasto criado com sucesso"),
+      );
       _scaffoldKey.currentState.showSnackBar(snackbar);
-    }
-    else {
-      SnackBar snackbar = SnackBar(backgroundColor: Colors.red, content: Text("Algo deu errado ao criar gasto", style: TextStyle(color: Colors.white),),);
+    } else {
+      SnackBar snackbar = SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          "Algo deu errado ao criar gasto",
+          style: TextStyle(color: Colors.white),
+        ),
+      );
       _scaffoldKey.currentState.showSnackBar(snackbar);
     }
   }
 
-  Widget renderSaveButton(){
+  Widget renderSaveButton() {
     return Center(
       child: Padding(
         padding: EdgeInsets.only(top: 50),
         child: RaisedButton(
           color: Colors.blue,
-          child: Text("Salvar".toUpperCase(), style: TextStyle(color: Colors.white),),
+          child: Text(
+            "Salvar".toUpperCase(),
+            style: TextStyle(color: Colors.white),
+          ),
           onPressed: () => _insertCategory(),
         ),
       ),
     );
   }
 
-  Widget renderDescriptionText(){
+  Widget renderDescriptionText() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
         controller: _descriptionController,
         decoration: InputDecoration(
-          labelText: "Descrição",
-          hintText: "Insira uma breve descrição",
-          icon: Icon(Icons.edit)
-        ),
+            labelText: "Descrição",
+            hintText: "Insira uma breve descrição",
+            icon: Icon(Icons.edit)),
       ),
     );
   }
 
-  Widget renderTagList(BuildContext context){
+  Widget renderTagList(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Wrap(
         alignment: WrapAlignment.start,
         crossAxisAlignment: WrapCrossAlignment.start,
-        children: _selectedTags.map((tag){
+        children: _selectedTags.map((tag) {
           return Padding(
             padding: EdgeInsets.all(2),
             child: TagChip(tag),
@@ -118,43 +128,51 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
     );
   }
 
-  String formatCash(int value){
-    return "R\$ " + (value.toDouble()/100).toStringAsFixed(2);
+  String formatCash(int value) {
+    return "R\$ " + (value.toDouble() / 100).toStringAsFixed(2);
   }
 
-  Widget renderValueButton(){
+  Widget renderValueButton() {
     return ListTile(
       title: Text(formatCash(_value)),
       leading: Icon(Icons.attach_money),
-      onTap: (){
+      onTap: () {
         showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context){
-            return Calculator(
-              onSubmit: (result){
-                setState(() {
-                 _value = result; 
-                });
-              },
-            );
-          }
-        );
+            barrierDismissible: false,
+            context: context,
+            builder: (context) {
+              return Calculator(
+                onSubmit: (result) {
+                  setState(() {
+                    _value = result;
+                  });
+                },
+              );
+            });
       },
     );
+  }
+
+  void _updateTags(List<Tag> newTags) {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      setState(() {
+        _selectedTags = newTags;
+      });
+    });
   }
 
   Widget renderTagButton(BuildContext context) {
     return ListTile(
       title: Text("Tags"),
-      onTap: () => AppNavigator.pushAddTagScreen(context, _selectedTags),
+      onTap: () =>
+          AppNavigator.pushAddTagScreen(context, _selectedTags, _updateTags),
       leading: Icon(Icons.label),
       trailing: Text("Editar"),
     );
   }
 
-  Widget renderCategoryButton(){
-    if (_selectedCategory == null){
+  Widget renderCategoryButton() {
+    if (_selectedCategory == null) {
       return ListTile(
         title: Text("Selecione a categoria"),
         onTap: () => showCategoryPicker(),
@@ -164,75 +182,81 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
     return ListTile(
       title: Text(_selectedCategory.title),
       onTap: () => showCategoryPicker(),
-      leading: Icon(_selectedCategory.icon, color: _selectedCategory.color,),
+      leading: Icon(
+        _selectedCategory.icon,
+        color: _selectedCategory.color,
+      ),
       trailing: Icon(Icons.arrow_drop_down),
     );
   }
 
-  Widget renderDateButton(){
+  Widget renderDateButton() {
     var formatter = DateFormat('E, dd/MM/y', 'pt_BR');
     return ListTile(
       title: Text(formatter.format(_selectedDate)),
       onTap: () => _showDatePicker(),
       leading: Icon(Icons.calendar_today),
-        trailing: Icon(Icons.arrow_drop_down),
+      trailing: Icon(Icons.arrow_drop_down),
     );
   }
 
-  void resetFields(){
+  void resetFields() {
     setState(() {
       _value = 0;
-     _descriptionController.text = '';
-     _selectedCategory = null;
-     _selectedTags = List<Tag>();
-     _selectedDate = DateTime.now(); 
+      _descriptionController.text = '';
+      _selectedCategory = null;
+      _selectedTags = List<Tag>();
+      _selectedDate = DateTime.now();
     });
   }
 
-  void _showDatePicker(){
+  void _showDatePicker() {
     showDatePicker(
       context: context,
       initialDate: _selectedDate,
       firstDate: DateTime(2010),
       lastDate: DateTime(2030),
-    )
-      .then((date){
-        if (date != null){
-          setState(() {
-            _selectedDate = date;
-          });
-        }
-      });
+    ).then((date) {
+      if (date != null) {
+        setState(() {
+          _selectedDate = date;
+        });
+      }
+    });
   }
 
-  void showCategoryPicker(){
+  void showCategoryPicker() {
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => PickerDialog<Category>(
-        title: "Selecione a categoria",
-        items: _categories,
-        onItemSelected: (category){
-          setState(() {
-           _selectedCategory = category; 
-          });
-        },
-        renderer: (category){
-          return ListTile(
-            leading: Icon(category.icon, color: category.color,),
-            title: Text(category.title),
-          );
-        },
-      )
-    );
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => PickerDialog<Category>(
+              title: "Selecione a categoria",
+              items: _categories,
+              onSearch: (category, text) => category.title.contains(text),
+              onItemSelected: (category) {
+                setState(() {
+                  _selectedCategory = category;
+                });
+              },
+              renderer: (category) {
+                return ListTile(
+                  leading: Icon(
+                    category.icon,
+                    color: category.color,
+                  ),
+                  title: Text(category.title),
+                );
+              },
+            ));
   }
 
   void getData() {
-    _categoryRepository.getCategories()
-      .then((result){
-        setState(() {
-          _categories = result;
-        });
+    _categoryRepository.getCategories().then((result) {
+      setState(() {
+        _categories = result;
       });
+    });
   }
 }
+
+void _updateTags(List<Tag> p1) {}

@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:extract_flutter/services/repositories/TagRepository.dart';
 
 class AddTagScreen extends StatefulWidget {
-  AddTagScreen(this.tags);
+  AddTagScreen(this.tags, this.onUpdate);
 
   final List<Tag> tags;
+  final void Function(List<Tag>) onUpdate;
 
   @override
   _AddTagScreenState createState() => _AddTagScreenState();
 }
 
 class _AddTagScreenState extends State<AddTagScreen> {
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final TagRepository _tagRepository = TagRepository();
   List<Tag> _tags = List<Tag>();
@@ -26,18 +26,19 @@ class _AddTagScreenState extends State<AddTagScreen> {
   void initState() {
     super.initState();
     setState(() {
-     _selectedTags = widget.tags; 
+      _selectedTags = widget.tags;
     });
     _fetchTagsFromDatabase();
-    _textEditingController.addListener((){
+    _textEditingController.addListener(() {
       setState(() {
-        _fabVisible = _textEditingController.text != ""; 
+        _fabVisible = _textEditingController.text != "";
       });
     });
   }
 
   @override
   void dispose() {
+    widget.onUpdate(_selectedTags);
     super.dispose();
   }
 
@@ -64,32 +65,29 @@ class _AddTagScreenState extends State<AddTagScreen> {
               onSubmitted: (string) => _showNewTagDialog(context),
               controller: _textEditingController,
               decoration: InputDecoration(
-                icon: Icon(Icons.edit),
-                labelText: 'Adicionar Tag',
-                hintText: "Pesquise por uma tag",
-                border: UnderlineInputBorder()
-              ),
+                  icon: Icon(Icons.edit),
+                  labelText: 'Adicionar Tag',
+                  hintText: "Pesquise por uma tag",
+                  border: UnderlineInputBorder()),
             ),
-            Flexible(
-              child: _renderListView()
-            )
+            Flexible(child: _renderListView())
           ],
         ),
       ),
     );
   }
 
-  List<int> _getSelectedIds(){
+  List<int> _getSelectedIds() {
     return _selectedTags.map((tag) => tag.id).toList();
   }
 
-  Widget _renderListView(){
+  Widget _renderListView() {
     return RefreshIndicator(
       onRefresh: _fetchTagsFromDatabase,
       child: Scrollbar(
         child: ListView.builder(
           itemCount: _tags.length,
-          itemBuilder: (context, index){
+          itemBuilder: (context, index) {
             return _renderTag(_tags.elementAt(index), index);
           },
         ),
@@ -98,53 +96,66 @@ class _AddTagScreenState extends State<AddTagScreen> {
   }
 
   Future<void> _fetchTagsFromDatabase() {
-    return _tagRepository.getTags()
-      .then((tags){
-        tags.sort((tag1, tag2){
-          var selectedIds = _getSelectedIds();
-          if (!selectedIds.contains(tag1.id)) return 1;
-          if (!selectedIds.contains(tag2.id)) return -1;
-          return 0;
-        });
-        setState(() {
-         _tags = tags; 
-        });
+    return _tagRepository.getTags().then((tags) {
+      tags.sort((tag1, tag2) {
+        var selectedIds = _getSelectedIds();
+        if (!selectedIds.contains(tag1.id)) return 1;
+        if (!selectedIds.contains(tag2.id)) return -1;
+        return 0;
       });
+      setState(() {
+        _tags = tags;
+      });
+    });
   }
-  
+
   void _showSnackbar(String text) {
     print("devia mostrar uma snackbar");
     print(text);
-    final snackbar = SnackBar(content: Text(text),);
+    final snackbar = SnackBar(
+      content: Text(text),
+    );
     _scaffoldKey.currentState.showSnackBar(snackbar);
   }
 
-  void _showNewTagDialog(BuildContext context){
+  void _showNewTagDialog(BuildContext context) {
     showDialog(
-      context: context,
-      builder: (context){
-        return NewTagDialog(
-          title: _textEditingController.text,
-          onSave: (tag){
-            _tagRepository.insertTag(tag)
-              .then((result){
-                _fetchTagsFromDatabase();
-                if (result > 0) {
-                  tag.id = result;
-                  setState(() {
-                    _selectedTags.add(tag);
-                    _textEditingController.text = '';
-                  });
-                  _showSnackbar("Tag criada com sucesso!");
-                }
-                else {
-                  _showSnackbar("Algo deu errado ao criar a tag :(");
-                }
+        context: context,
+        builder: (context) {
+          return NewTagDialog(
+              title: _textEditingController.text,
+              onSave: (tag) {
+                _tagRepository.insertTag(tag).then((result) {
+                  _fetchTagsFromDatabase();
+                  if (result > 0) {
+                    tag.id = result;
+                    setState(() {
+                      _selectedTags.add(tag);
+                      _textEditingController.text = '';
+                    });
+                    _showSnackbar("Tag criada com sucesso!");
+                  } else {
+                    _showSnackbar("Algo deu errado ao criar a tag :(");
+                  }
+                });
               });
-          }
-        );
-      }
-    );
+        });
+  }
+
+  void _toggleTag(Tag tagClicked) {
+    print('cliquei na tag ${tagClicked.title}');
+    print('selected Tags $_selectedTags');
+    if (_getSelectedIds().contains(tagClicked.id)) {
+      print('tag clicada estava selecionada');
+      setState(() {
+        _selectedTags.removeWhere((tag) => tag.id == tagClicked.id);
+      });
+    } else {
+      print('tag clicada não estava selecionada');
+      setState(() {
+        _selectedTags.add(tagClicked);
+      });
+    }
   }
 
   Widget _renderTag(Tag tag, int index) {
@@ -156,19 +167,10 @@ class _AddTagScreenState extends State<AddTagScreen> {
         dense: true,
         selected: isSelected,
         onTap: () {
-          if  (isSelected ) {
-            setState(() {
-              _selectedTags.removeAt(index);
-            });
-          }
-          else {
-            setState(() {
-              _selectedTags.add(tag);
-            });
-          }
+          _toggleTag(tag);
         },
         title: TagChip(tag),
-        trailing: Icon(isSelected? Icons.check : null),
+        trailing: Icon(isSelected ? Icons.check : null),
       ),
     );
   }
