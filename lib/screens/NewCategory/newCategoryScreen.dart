@@ -69,17 +69,18 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         showDialog(
           barrierDismissible: false,
           context: context,
-          builder: (context) => PickerDialog<IconData>(
+          builder: (context) => PickerDialog<MapEntry<String, IconData>>(
             columns: 4,
-            items: materialIconList.values.toList(),
-            onItemSelected: (icon){
+            items: materialIconList.entries.toList(),
+            onSearch: (entry, text) => entry.key.contains(text),
+            onItemSelected: (entry){
               setState(() {
-                _selectedIcon = icon; 
+                _selectedIcon = entry.value;
               });
             },
             title: "Selecione o ícone",
-            renderer: (icon){
-              return (Center(child: Icon(icon, color: _selectedColor,),));
+            renderer: (entry){
+              return (Center(child: Icon(entry.value, color: _selectedColor,),));
             },
           )
         );

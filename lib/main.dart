@@ -10,7 +10,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   initializeDateFormatting('pt_BR');
   DbHelper().database;
-  runAppSpector();
+  //runAppSpector();
   runApp(MaterialApp(home: HomeScreen()));
 
 }
