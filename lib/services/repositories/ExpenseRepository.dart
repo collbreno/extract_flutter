@@ -31,7 +31,7 @@ class ExpenseRepository {
       "select * from ${ExpenseTable.tableName} natural join ${CategoryTable.tableName}"
     );
     var expenseList = mapList.map((object){
-      print(object);
+      //print(object);
       return Expense.fromObjectWithCategory(object);
     }).toList();
 
@@ -46,12 +46,24 @@ class ExpenseRepository {
     return expenseList;
   }
 
-  Future<int> getExpensesAmmount() async {
+  Future<int> getExpensesAmount() async {
     Database db = await _dbHelper.database;
     var count = Sqflite.firstIntValue(
       await db.rawQuery("select count (*) from ${ExpenseTable.tableName}")
     );
     return count;
+  }
+
+  Future<int> getVersion() async {
+    Database db = await _dbHelper.database;
+    int result = await db.getVersion();
+    return result;
+  }
+
+  Future<void> deleteExpense(int expenseId) async {
+    Database db = await _dbHelper.database;
+    int result = await db.rawDelete("delete from ${ExpenseTable.tableName} where ${ExpenseTable.colId}='$expenseId'");
+    print(result);
   }
   
 

@@ -2,15 +2,16 @@ import 'package:extract_flutter/models/Tag.dart';
 import 'package:flutter/material.dart';
 
 class TagChip extends StatelessWidget {
-  TagChip(@required this.tag);
+  TagChip(this.tag);
 
   final Tag tag;
+  static double height = 20;
 
   @override
   Widget build(BuildContext context) {
     // return Text(title);
     return SizedBox(
-      height: 26,
+      height: height,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 6),
         decoration: ShapeDecoration(
@@ -21,7 +22,7 @@ class TagChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             renderIcon(),
-            Text(tag.title, style: TextStyle(color: tag.textColor, fontSize: 12, fontWeight: FontWeight.w600),)
+            Text(tag.title, style: TextStyle(color: tag.textColor, fontSize: 11, fontWeight: FontWeight.w600),)
           ],
         ),
       ),
@@ -32,7 +33,7 @@ class TagChip extends StatelessWidget {
     if (tag.icon== null) return Container();
     return Padding(
       padding: EdgeInsets.only(right: 6),
-      child: Icon(tag.icon, size: 16, color: tag.textColor,),
+      child: Icon(tag.icon, size: 14, color: tag.textColor,),
     );
   }
 }

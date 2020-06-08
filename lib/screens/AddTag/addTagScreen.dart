@@ -110,12 +110,12 @@ class _AddTagScreenState extends State<AddTagScreen> {
   }
 
   void _showSnackbar(String text) {
-    print("devia mostrar uma snackbar");
+    print("devia mostrar uma snackBar");
     print(text);
-    final snackbar = SnackBar(
+    final snackBar = SnackBar(
       content: Text(text),
     );
-    _scaffoldKey.currentState.showSnackBar(snackbar);
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   void _showNewTagDialog(BuildContext context) {

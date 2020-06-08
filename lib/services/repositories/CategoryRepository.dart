@@ -21,7 +21,7 @@ class CategoryRepository {
     }).toList();
   }
 
-  Future<int> getCategoriesAmmount() async {
+  Future<int> getCategoriesAmount() async {
     Database db = await _dbHelper.database;
     var count = Sqflite.firstIntValue(
       await db.rawQuery("select count (*) from ${CategoryTable.tableName}")

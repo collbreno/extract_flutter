@@ -21,7 +21,7 @@ class TagRepository {
     }).toList();
   }
 
-  Future<int> getTagsAmmount() async {
+  Future<int> getTagsAmount() async {
     Database db = await _dbHelper.database;
     var count = Sqflite.firstIntValue(
       await db.rawQuery("select count (*) from ${TagTable.tableName}")

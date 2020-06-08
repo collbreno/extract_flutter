@@ -36,5 +36,4 @@ class DbHelper {
     await db.execute(ExpenseTable.createScript);
     await db.execute(ExpenseTagsTable.createScript);
   }
-
 }

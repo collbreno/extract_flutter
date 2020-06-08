@@ -9,9 +9,7 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-
   final title = "Histórico";
-  int _count = 0;
   List<Expense> _expenses = List<Expense>();
   ExpenseRepository _expenseRepository = ExpenseRepository();
 
@@ -25,24 +23,35 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Hero(tag: title.toUpperCase(), child: Text(title, textAlign: TextAlign.left, style: TextStyle(color: Colors.white, decoration: TextDecoration.none, fontSize: 20),),),
+        title: Hero(
+          tag: title.toUpperCase(),
+          child: Text(
+            title,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                color: Colors.white,
+                decoration: TextDecoration.none,
+                fontSize: 20),
+          ),
+        ),
       ),
       body: ListView.builder(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         itemCount: _expenses.length,
-        itemBuilder: (context, index){
-          return ExpenseCard(_expenses.elementAt(index));
+        itemBuilder: (context, index) {
+          return ExpenseCard(
+            expense: _expenses.elementAt(index),
+            onDatabaseChange: () => _fetchFromDatabase(),
+          );
         },
       ),
     );
   }
 
-  void _fetchFromDatabase(){
-    _expenseRepository.getExpenses().then((expenses){
-      expenses.forEach((e){
-        print(e.toMap());
-      });
+  void _fetchFromDatabase() {
+    _expenseRepository.getExpenses().then((expenses) {
       setState(() {
-       _expenses = expenses; 
+        _expenses = expenses;
       });
     });
   }

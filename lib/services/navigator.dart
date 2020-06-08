@@ -9,22 +9,38 @@ import 'package:flutter/material.dart';
 
 class AppNavigator {
   static void pushNewExpenseScreen(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewExpenseScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => NewExpenseScreen()));
   }
 
-  static void pushNewCategoryScreen(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewCategoryScreen()));
+  static void pushNewCategoryScreen(BuildContext context,
+      {void Function() onDispose}) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => NewCategoryScreen(
+              onDispose: onDispose,
+            )));
   }
 
   static void pushHistoryScreen(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => HistoryScreen()));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => HistoryScreen()));
   }
 
-  static void pushAddTagScreen(BuildContext context, List<Tag> tags, void Function(List<Tag>) onUpdate){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTagScreen(tags, onUpdate)));
+  static void pushAddTagScreen(
+      BuildContext context, List<Tag> tags, void Function(List<Tag>) onUpdate) {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => AddTagScreen(tags, onUpdate)));
   }
 
-  static void pushDetailTagScreen(BuildContext context, Expense expense){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ExpenseDetailScreen(expense)));
+  static void pushDetailTagScreen(
+    BuildContext context, {
+    Expense expense,
+    void Function() onDatabaseChange,
+  }) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => ExpenseDetailScreen(
+              expense: expense,
+              onDatabaseChange: onDatabaseChange,
+            )));
   }
 }

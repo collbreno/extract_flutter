@@ -7,6 +7,7 @@ class PickerDialog<T> extends StatefulWidget {
     @required this.items,
     @required this.renderer,
     @required this.onItemSelected,
+    this.footer,
     this.onSearch,
     this.contentPadding = const EdgeInsets.all(12),
     this.columns = 1,
@@ -14,6 +15,7 @@ class PickerDialog<T> extends StatefulWidget {
   });
 
   final EdgeInsets contentPadding;
+  final Widget footer;
   final int columns;
   final bool Function(T, String) onSearch;
   final void Function(T) onItemSelected;
@@ -212,11 +214,13 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
       ),
       child: Scrollbar(
         child: ListView.builder(
-          itemCount: visibleItems.length,
+          itemCount: widget.footer != null ? visibleItems.length + 1 : visibleItems.length,
           itemBuilder: (context, index) {
-            return FlatButton(
-              padding: EdgeInsets.all(0),
-              onPressed: () {
+            if (index == visibleItems.length) {
+              return widget.footer;
+            }
+            return InkWell(
+              onTap: () {
                 widget.onItemSelected(visibleItems[index]);
                 Navigator.pop(context);
               },

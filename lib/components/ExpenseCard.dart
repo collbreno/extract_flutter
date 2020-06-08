@@ -1,19 +1,22 @@
 import 'package:extract_flutter/components/TagChip.dart';
 import 'package:extract_flutter/models/Expense.dart';
 import 'package:extract_flutter/services/navigator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ExpenseCard extends StatelessWidget {
-  ExpenseCard(this._expense);
-  final Expense _expense;
+  ExpenseCard({this.expense, this.onDatabaseChange});
+
+  final Expense expense;
+  final void Function() onDatabaseChange;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
         onTap: (){
-          AppNavigator.pushDetailTagScreen(context, _expense);
+          AppNavigator.pushDetailTagScreen(context, expense: expense, onDatabaseChange: onDatabaseChange);
         },
         child: Column(
           children: <Widget>[
@@ -23,7 +26,7 @@ class ExpenseCard extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(4),)
                 ),
-                color: _expense.category.color
+                color: expense.category.color
               ),
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Row(
@@ -33,20 +36,20 @@ class ExpenseCard extends StatelessWidget {
                     children: <Widget>[
                       Hero(
                         tag: getHeroTag('icon'),
-                        child: Material(type: MaterialType.transparency, child: Icon(_expense.category.icon, size: 18, color: getTextColor(),))
+                        child: Material(type: MaterialType.transparency, child: Icon(expense.category.icon, size: 18, color: getTextColor(),))
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 6),
                         child: Hero(
                           tag: getHeroTag('title'),
-                          child: Material(type: MaterialType.transparency, child: Text(_expense.category.title, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: getTextColor()),))
+                          child: Material(type: MaterialType.transparency, child: Text(expense.category.title, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: getTextColor()),))
                         ),
                       ),
                     ],
                   ),
                   Hero(
                     tag:getHeroTag('value'), 
-                    child: Material(type: MaterialType.transparency, child: Text(formatCash(_expense.value), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: getTextColor()),))
+                    child: Material(type: MaterialType.transparency, child: Text(formatCash(expense.value), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: getTextColor()),))
                   )
                 ],
               ),
@@ -60,27 +63,30 @@ class ExpenseCard extends StatelessWidget {
                     padding: EdgeInsets.only(left: 4),
                     child: Hero(
                       tag: getHeroTag('date_text'), 
-                      child: Material(type: MaterialType.transparency, child: Text(DateFormat('E, dd/MM/y', 'pt_BR').format(_expense.date), style: TextStyle(fontSize: 14),))
+                      child: Material(type: MaterialType.transparency, child: Text(DateFormat('E, dd/MM/y', 'pt_BR').format(expense.date), style: TextStyle(fontSize: 14),))
                     ),
                   )
                 ],
               ),
             ),
-            Container(
-              height: 26,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _expense.tags.length,
-                itemBuilder: (context, index){
-                  var tag = _expense.tags.elementAt(index);
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Hero(
-                      tag: getHeroTag('tag_${tag.id}'),
-                      child: Material(type: MaterialType.transparency, child: TagChip(tag)),
-                    ),
-                  );
-                },
+            Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+              child: Container(
+                height: TagChip.height,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: expense.tags.length,
+                  itemBuilder: (context, index){
+                    var tag = expense.tags.elementAt(index);
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Hero(
+                        tag: getHeroTag('tag_${tag.id}'),
+                        child: Material(type: MaterialType.transparency, child: TagChip(tag)),
+                      ),
+                    );
+                  },
+                ),
               ),
             )
           ],
@@ -90,11 +96,11 @@ class ExpenseCard extends StatelessWidget {
   }
 
   String getHeroTag(String tag){
-    return "${_expense.id}_$tag";
+    return "${expense.id}_$tag";
   }
 
   Color getTextColor(){
-    return _expense.category.color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+    return expense.category.color.computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
   
   String formatCash(int value){
