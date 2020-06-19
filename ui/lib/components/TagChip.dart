@@ -6,6 +6,7 @@ class TagChip extends StatelessWidget {
 
   final Tag tag;
   static double height = 20;
+  static double minWidth = 56;
 
   @override
   Widget build(BuildContext context) {
@@ -13,27 +14,44 @@ class TagChip extends StatelessWidget {
     return SizedBox(
       height: height,
       child: Container(
+        constraints: BoxConstraints(
+          minWidth: minWidth,
+        ),
         padding: EdgeInsets.symmetric(horizontal: 6),
         decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          color: tag.color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          color: tag.color,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             renderIcon(),
-            Text(tag.title, style: TextStyle(color: tag.textColor, fontSize: 11, fontWeight: FontWeight.w600),)
+            Text(
+              tag.title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: tag.textColor,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            )
           ],
         ),
       ),
     );
   }
 
-  Widget renderIcon(){
-    if (tag.icon== null) return Container();
+  Widget renderIcon() {
+    if (tag.icon == null) return Container();
     return Padding(
       padding: EdgeInsets.only(right: 6),
-      child: Icon(tag.icon, size: 14, color: tag.textColor,),
+      child: Icon(
+        tag.icon,
+        size: 14,
+        color: tag.textColor,
+      ),
     );
   }
 }

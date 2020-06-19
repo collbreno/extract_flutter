@@ -16,8 +16,8 @@ class NewTagDialog extends StatefulWidget {
 }
 
 class _NewTagDialogState extends State<NewTagDialog> {
-  Color _selectedColor = Colors.grey[400];
-  Color _selectedTextColor = Colors.black;
+  Color _selectedColor = Tag.DEFAULT_COLOR;
+  Color _selectedTextColor = Tag.DEFAULT_TEXT_COLOR;
   IconData _selectedIcon;
 
   @override
@@ -97,18 +97,21 @@ class _NewTagDialogState extends State<NewTagDialog> {
                 _selectedIcon = null;
               });
             },
-            onSearch: (entry, text) => entry.key.contains(text),
+            onSearch: (entry, text) => entry.key.toUpperCase().contains(text.toUpperCase()),
             renderer: (entry) {
-              return Container(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Icon(
-                    entry.value,
-                    color: _selectedTextColor,
+              return Tooltip(
+                message: entry.key,
+                child: Container(
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Icon(
+                      entry.value,
+                      color: _selectedTextColor,
+                    ),
                   ),
+                  decoration: ShapeDecoration(
+                      color: _selectedColor, shape: CircleBorder()),
                 ),
-                decoration: ShapeDecoration(
-                    color: _selectedColor, shape: CircleBorder()),
               );
             },
           );

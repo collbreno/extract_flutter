@@ -2,6 +2,7 @@ import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ui/components/TagChip.dart';
+import 'package:ui/helpers/navigator.dart';
 
 class ExpenseDetailScreen extends StatelessWidget {
   ExpenseDetailScreen({this.expense, this.onDatabaseChange});

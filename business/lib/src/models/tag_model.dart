@@ -3,10 +3,10 @@ import 'package:infrastructure/infrastructure.dart';
 
 class Tag {
   int id;
-  final String title;
-  final Color color;
-  final Color textColor;
-  final IconData icon;
+  String title;
+  Color color;
+  Color textColor;
+  IconData icon;
 
   Tag({
     this.id,
@@ -39,4 +39,8 @@ class Tag {
         iconFontFamily: icon?.fontFamily,
         iconFontPackage: icon?.fontPackage);
   }
+
+  static Color DEFAULT_COLOR = Colors.grey[400];
+  static const Color DEFAULT_TEXT_COLOR = Colors.black;
+
 }

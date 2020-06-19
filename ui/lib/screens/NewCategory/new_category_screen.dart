@@ -1,5 +1,4 @@
 import 'package:business/business.dart';
-import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/components/PickerDialog.dart';
 import 'package:ui/helpers/colors.dart';
@@ -10,9 +9,16 @@ import 'color_picker_button.dart';
 import 'icon_picker_button.dart';
 
 class NewCategoryScreen extends StatefulWidget {
-  const NewCategoryScreen({Key key, this.onDispose}) : super(key: key);
+  const NewCategoryScreen({
+    Key key,
+    this.onDispose,
+    this.category,
+    this.closeOnSave = false,
+  }) : super(key: key);
 
   final void Function() onDispose;
+  final Category category;
+  final bool closeOnSave;
 
   @override
   _NewCategoryScreenState createState() => _NewCategoryScreenState();
@@ -22,17 +28,22 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final screenTitle = "Nova Categoria";
 
-  CategoryService _categoryService = CategoryService();
-  Color _selectedColor = Colors.blue;
-  IconData _selectedIcon = Icons.ac_unit;
-  TextEditingController _titleController = TextEditingController();
-  bool _titleHasError = false;
-  bool _isColorNull = false;
-  bool _isIconNull = false;
+  CategoryService _categoryService;
+  Color _selectedColor;
+  IconData _selectedIcon;
+  TextEditingController _titleController;
+  bool _titleHasError;
+  bool _isColorNull;
+  bool _isIconNull;
 
   @override
   void initState() {
     super.initState();
+    _categoryService = CategoryService();
+    _titleHasError = false;
+    _isColorNull = false;
+    _isIconNull = false;
+    _titleController = TextEditingController();
     _titleController.addListener(() {
       if (_titleController.text.isNotEmpty) {
         setState(() {
@@ -40,11 +51,20 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         });
       }
     });
+    if (widget.category == null) {
+      _selectedColor = Colors.blue;
+      _selectedIcon = Icons.ac_unit;
+    } else {
+      _selectedColor = widget.category.color;
+      _selectedIcon = widget.category.icon;
+      _titleController.text = widget.category.title;
+    }
   }
 
   @override
   void dispose() {
     if (widget.onDispose != null) widget.onDispose();
+    _titleController.dispose();
     super.dispose();
   }
 
@@ -53,27 +73,34 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: renderAppBar(),
-        body: Padding(
+        body: ListView(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Column(
-            children: <Widget>[
-              TitleTextField(
-                color: _selectedColor,
-                hasError: _titleHasError,
-                controller: _titleController,
-              ),
-              IconPickerButton(
-                color: _selectedColor,
-                icon: _selectedIcon,
-                onTap: _showIconPickerDialog,
-              ),
-              ColorPickerButton(
-                onTap: _showColorPickerDialog,
-                color: _selectedColor,
-              ),
-              renderSaveButton(),
-            ],
-          ),
+          children: <Widget>[
+            TitleTextField(
+              color: _selectedColor,
+              hasError: _titleHasError,
+              placeholder: "Insira o nome da categoria",
+              controller: _titleController,
+            ),
+            IconPickerButton(
+              color: _selectedColor,
+              icon: _selectedIcon,
+              onIconSelected: (IconData icon) {
+                setState(() {
+                  _selectedIcon = icon;
+                });
+              },
+            ),
+            ColorPickerButton(
+              onColorSelected: (Color color) {
+                setState(() {
+                  _selectedColor = color;
+                });
+              },
+              color: _selectedColor,
+            ),
+            renderSaveButton(),
+          ],
         ));
   }
 
@@ -92,61 +119,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         ),
       ),
       backgroundColor: _selectedColor,
-    );
-  }
-
-  void _showIconPickerDialog() {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => PickerDialog<MapEntry<String, IconData>>(
-        columns: 4,
-        items: materialIconList.entries.toList(),
-        onSearch: (entry, text) => entry.key.contains(text),
-        onItemSelected: (entry) {
-          setState(() {
-            _selectedIcon = entry.value;
-          });
-        },
-        title: "Selecione o ícone",
-        renderer: (entry) {
-          return (Center(
-            child: Icon(
-              entry.value,
-              color: _selectedColor,
-            ),
-          ));
-        },
-      ),
-    );
-  }
-
-  void _showColorPickerDialog() {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => PickerDialog<Color>(
-        columns: 5,
-        title: "Selecione a cor",
-        items: MaterialColors.getAllColorAndTones(),
-        onItemSelected: (color) {
-          setState(() {
-            _selectedColor = color;
-          });
-        },
-        renderer: (color) {
-          return Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              child: null,
-              decoration: ShapeDecoration(
-                  color: color,
-                  shape: CircleBorder(
-                      side: BorderSide(width: 0.5, color: Colors.black))),
-            ),
-          );
-        },
-      ),
     );
   }
 
@@ -171,24 +143,33 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   }
 
   void _insertCategory() async {
-    int response = await _categoryService.insert(
-      Category(
-        title: _titleController.text.trim(),
-        color: _selectedColor,
-        icon: _selectedIcon,
-      ),
+    Category categoryToInsert = Category(
+      id: widget.category?.id,
+      title: _titleController.text.trim(),
+      color: _selectedColor,
+      icon: _selectedIcon,
     );
+    String keyWordOnSuccess = categoryToInsert.id == null ? 'criada' : 'editada';
+    String keyWordOnFail = categoryToInsert.id == null ? 'criar' : 'editar';
+    int response;
+    if (categoryToInsert.id == null) {
+      response = await _categoryService.insert(categoryToInsert);
+    }
+    else {
+      response = await _categoryService.updateCategory(categoryToInsert);
+    }
     if (response != null && response > 0) {
       _resetFields();
       SnackBar snackBar = SnackBar(
-        content: Text("Categoria criada com sucesso"),
+        content: Text("Categoria $keyWordOnSuccess com sucesso"),
       );
       _scaffoldKey.currentState.showSnackBar(snackBar);
+      if (widget.closeOnSave) Navigator.pop(context);
     } else {
       SnackBar snackBar = SnackBar(
         backgroundColor: Colors.red,
         content: Text(
-          "Algo deu errado ao criar categoria",
+          "Algo deu errado ao $keyWordOnFail categoria",
           style: TextStyle(color: Colors.white),
         ),
       );

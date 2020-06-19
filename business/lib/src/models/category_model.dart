@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:infrastructure/infrastructure.dart';
 
 class Category {
-  final int id;
-  final String title;
-  final Color color;
-  final IconData icon;
+  int id;
+  String title;
+  Color color;
+  IconData icon;
 
   Category({
     this.id,

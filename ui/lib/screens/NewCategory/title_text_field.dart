@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 
 class TitleTextField extends StatelessWidget {
-
   final bool hasError;
   final Color color;
+  final String placeholder;
   final TextEditingController controller;
 
-  const TitleTextField({Key key, this.hasError, this.color, this.controller}) : super(key: key);
+  const TitleTextField({
+    Key key,
+    this.hasError,
+    this.color,
+    this.controller,
+    this.placeholder,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +25,13 @@ class TitleTextField extends StatelessWidget {
             icon: Icon(Icons.edit),
             suffixIcon: hasError
                 ? Icon(
-              Icons.error,
-              color: Colors.red,
-            )
+                    Icons.error,
+                    color: Colors.red,
+                  )
                 : null,
             errorText: hasError ? 'Não pode ser vazio' : null,
             labelText: 'Nome',
-            hintText: "Insira o nome da categoria",
+            hintText: placeholder,
             border: UnderlineInputBorder()),
       ),
     );

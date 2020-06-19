@@ -4,11 +4,11 @@ import 'package:infrastructure/infrastructure.dart';
 
 class Expense {
   int id;
-  final int value;
-  final String description;
-  final DateTime date;
-  final Category category;
-  final List<Tag> tags;
+  int value;
+  String description;
+  DateTime date;
+  Category category;
+  List<Tag> tags;
 
   Expense({
     this.id,

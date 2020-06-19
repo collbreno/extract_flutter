@@ -142,17 +142,15 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
   }
 
   Widget _renderSaveButton() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.only(top: 50),
-        child: RaisedButton(
-          color: Colors.blue,
-          child: Text(
-            "Salvar".toUpperCase(),
-            style: TextStyle(color: Colors.white),
-          ),
-          onPressed: _checkFieldsAndInsert,
+    return Padding(
+      padding: EdgeInsets.only(top: 50),
+      child: RaisedButton(
+        color: Colors.blue,
+        child: Text(
+          "Salvar".toUpperCase(),
+          style: TextStyle(color: Colors.white),
         ),
+        onPressed: _checkFieldsAndInsert,
       ),
     );
   }
@@ -240,7 +238,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
         return PickerDialog<Category>(
           title: "Selecione a categoria",
           items: _categories,
-          onSearch: (category, text) => category.title.contains(text),
+          onSearch: (category, text) => category.title.toUpperCase().contains(text.toUpperCase()),
           footer: ListTile(
             title: Text("Nova categoria"),
             leading: Icon(Icons.add),
@@ -268,7 +266,11 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
 
   void _createCategory() {
     Navigator.pop(context);
-    AppNavigator.pushNewCategoryScreen(context, onDispose: _fetchCategories);
+    AppNavigator.pushNewCategoryScreen(
+      context,
+      onDispose: _fetchCategories,
+      closeOnSave: true,
+    );
   }
 
   void _fetchCategories() {

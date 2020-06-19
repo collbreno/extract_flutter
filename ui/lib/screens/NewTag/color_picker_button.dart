@@ -3,27 +3,26 @@ import 'package:ui/components/PickerDialog.dart';
 import 'package:ui/helpers/colors.dart';
 
 class ColorPickerButton extends StatelessWidget {
-
-  final Color color;
   final void Function(Color) onColorSelected;
+  final String title;
+  final Icon leading;
 
-  const ColorPickerButton({Key key, this.color, this.onColorSelected}) : super(key: key);
+  const ColorPickerButton({
+    Key key,
+    this.onColorSelected,
+    this.title,
+    this.leading,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  ListTile(
+    return ListTile(
       onTap: () => _showColorPickerDialog(context),
-      leading: Icon(Icons.color_lens),
-      trailing: Container(
-        width: 20,
-        height: 20,
-        decoration:
-        ShapeDecoration(shape: CircleBorder(), color: color),
-      ),
-      title: Text("Selecione a cor"),
+      leading: leading,
+      trailing: Icon(Icons.arrow_drop_down),
+      title: Text(title),
     );
   }
-
 
   void _showColorPickerDialog(BuildContext context) {
     showDialog(
@@ -40,9 +39,11 @@ class ColorPickerButton extends StatelessWidget {
             child: Container(
               child: null,
               decoration: ShapeDecoration(
-                  color: color,
-                  shape: CircleBorder(
-                      side: BorderSide(width: 0.5, color: Colors.black))),
+                color: color,
+                shape: CircleBorder(
+                  side: BorderSide(width: 0.5, color: Colors.black),
+                ),
+              ),
             ),
           );
         },

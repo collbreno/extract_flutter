@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ff955bf-be5a-4a4b-a03c-92448a3b50cc" name="Default Changelist" comment="" />
+    <list default="true" id="5ff955bf-be5a-4a4b-a03c-92448a3b50cc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/ui/lib/screens/NewTag/color_picker_button.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/lib/screens/NewTag/icon_picker_button.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/flutter_extract.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/flutter_extract.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/business/lib/src/models/category_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/business/lib/src/models/category_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/business/lib/src/models/expense_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/business/lib/src/models/expense_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/business/lib/src/models/tag_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/business/lib/src/models/tag_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infrastructure/lib/src/database_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lib/src/database_helper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/components/TagChip.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/components/TagChip.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/helpers/navigator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/helpers/navigator.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/AddTag/addTagScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/AddTag/addTagScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/AddTag/newTagDialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/AddTag/newTagDialog.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/Categories/categories_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/Categories/categories_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/ExpenseDetail/expenseDetailScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/ExpenseDetail/expenseDetailScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/NewCategory/color_picker_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/NewCategory/color_picker_button.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/NewCategory/icon_picker_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/NewCategory/icon_picker_button.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/NewCategory/newCategoryScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/NewCategory/new_category_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/NewCategory/title_text_field.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/NewCategory/title_text_field.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/NewExpense/newExpenseScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/NewExpense/newExpenseScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/lib/screens/Tags/tags_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/Tags/tags_screen.dart" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,19 +36,26 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1d3cxljRLLPPcNFxKXI37ajQuNK" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="PropertiesComponent">
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/ui" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/ui/lib/screens/NewTag" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Workspace\Coll\extract_flutter\ui\lib\screens\NewTag" />
+      <recent name="C:\Workspace\Coll\flutter_extract\ui" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Workspace\Coll\flutter_extract\infrastructure" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Workspace\Coll\flutter_extract\ui" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -60,5 +88,18 @@
       <updated>1591657465664</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

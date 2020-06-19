@@ -17,8 +17,9 @@ class AddTagScreen extends StatefulWidget {
 class _AddTagScreenState extends State<AddTagScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final TagService _tagService = TagService();
-  List<Tag> _tags = List<Tag>();
-  List<Tag> _selectedTags = List<Tag>();
+  List<Tag> _tags = <Tag>[];
+  List<Tag> _visibleTags = <Tag>[];
+  List<Tag> _selectedTags = <Tag>[];
   bool _fabVisible = false;
   TextEditingController _textEditingController = TextEditingController();
 
@@ -31,7 +32,12 @@ class _AddTagScreenState extends State<AddTagScreen> {
     _fetchTagsFromDatabase();
     _textEditingController.addListener(() {
       setState(() {
-        _fabVisible = _textEditingController.text != "";
+        String text = _textEditingController.text;
+        _visibleTags = _tags
+            .where(
+                (tag) => tag.title.toUpperCase().contains(text.toUpperCase()))
+            .toList();
+        _fabVisible = text != "";
       });
     });
   }
@@ -50,31 +56,46 @@ class _AddTagScreenState extends State<AddTagScreen> {
         automaticallyImplyLeading: true,
         title: Text("Adicionar Tag"),
       ),
-      floatingActionButton: Visibility(
-        visible: _fabVisible,
-        child: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () => _showNewTagDialog(context),
-        ),
-      ),
+      floatingActionButton: !_fabVisible
+          ? null
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _showNewTagDialog(context),
+            ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: Column(
           children: <Widget>[
             TextField(
-              onSubmitted: (string) => _showNewTagDialog(context),
+              onSubmitted: _handleOnSubmit,
               controller: _textEditingController,
               decoration: InputDecoration(
                   icon: Icon(Icons.edit),
-                  labelText: 'Adicionar Tag',
+                  labelText: 'Adicionar tag',
                   hintText: "Pesquise por uma tag",
                   border: UnderlineInputBorder()),
             ),
-            Flexible(child: _renderListView())
+            Flexible(
+              child: _renderListView(),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _handleOnSubmit(String text) {
+    if (text.trim().isNotEmpty) {
+      if (_visibleTags.isNotEmpty) {
+        _toggleTag(_visibleTags.first);
+        setState(() {
+          _textEditingController.clear();
+        });
+      }
+      else {
+        _showNewTagDialog(context);
+      }
+    }
   }
 
   List<int> _getSelectedIds() {
@@ -86,9 +107,9 @@ class _AddTagScreenState extends State<AddTagScreen> {
       onRefresh: _fetchTagsFromDatabase,
       child: Scrollbar(
         child: ListView.builder(
-          itemCount: _tags.length,
+          itemCount: _visibleTags.length,
           itemBuilder: (context, index) {
-            return _renderTag(_tags.elementAt(index), index);
+            return _renderTag(_visibleTags.elementAt(index), index);
           },
         ),
       ),
@@ -105,6 +126,7 @@ class _AddTagScreenState extends State<AddTagScreen> {
       });
       setState(() {
         _tags = tags;
+        _visibleTags = tags;
       });
     });
   }

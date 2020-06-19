@@ -21,8 +21,12 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     String dirPath = await getDatabasesPath();
     String path = dirPath + '/extract.db';
-    Database appDatabase = await openDatabase(path, version: 1, onCreate: _createDatabase);
+    Database appDatabase = await openDatabase(path, version: 1, onCreate: _createDatabase, onConfigure: _onConfigure);
     return appDatabase;
+  }
+
+  Future<void> _onConfigure(Database db) async {
+    await db.execute('PRAGMA foreign_keys = ON');
   }
 
   void _createDatabase(Database db, int version) async {
