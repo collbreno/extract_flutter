@@ -9,6 +9,7 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
   final CategoryService _categoryService = CategoryService();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Category> _categories = <Category>[];
 
   @override
@@ -28,13 +29,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Categorias"),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          AppNavigator.pushNewCategoryScreen(context, onDispose: _fetchCategories);
+          AppNavigator.pushNewCategoryScreen(context,
+              onDispose: _fetchCategories);
         },
       ),
       body: ListView.builder(
@@ -76,10 +79,24 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     );
   }
 
+  void _showSnackBar(String text) {
+    SnackBar snackBar = SnackBar(
+      content: Text(
+        text,
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   void _handleAction(BuildContext context, String action, Category category) {
     if (action == Actions.delete) {
-      _categoryService.deleteCategoryWithId(category.id);
-      _fetchCategories();
+      _categoryService.deleteCategoryWithId(category.id).then((value) {
+        _showSnackBar("Categoria deletada com sucesso");
+        _fetchCategories();
+      }).catchError((Object error) {
+        print(error);
+        _showSnackBar("Algo deu errado");
+      });
     } else if (action == Actions.edit) {
       AppNavigator.pushNewCategoryScreen(
         context,

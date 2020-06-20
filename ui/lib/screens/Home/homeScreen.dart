@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:business/business.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/helpers/navigator.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'components/HomeScreenButton.dart';
 
@@ -46,6 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 AppNavigator.pushTagsScreen(context);
               },
             ),
+            ListTile(
+              title: Text("Rodar script SQL"),
+              leading: Icon(Icons.adb),
+              onTap: () {
+                Navigator.pop(context);
+                AppNavigator.pushBackupScreen(context);
+              },
+            ),
           ],
         ),
       ),
@@ -60,7 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(vertical: 42.0),
-            child: Text("Total gasto esse mês $totalValue", textAlign: TextAlign.center,),
+            child: Text(
+              "Total gasto esse mês $totalValue",
+              textAlign: TextAlign.center,
+            ),
           ),
           GridView.count(
             crossAxisCount: 2,

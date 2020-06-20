@@ -2,6 +2,7 @@ import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/screens/AddTag/addTagScreen.dart';
 import 'package:ui/screens/AddTag/newTagDialog.dart';
+import 'package:ui/screens/BackupScreen/backup_screen.dart';
 import 'package:ui/screens/Categories/categories_screen.dart';
 import 'package:ui/screens/ExpenseDetail/expenseDetailScreen.dart';
 import 'package:ui/screens/History/historyScreen.dart';
@@ -14,6 +15,11 @@ class AppNavigator {
   static void pushNewExpenseScreen(BuildContext context) {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => NewExpenseScreen()));
+  }
+
+  static void pushBackupScreen(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => BackupScreen()));
   }
 
   static void pushNewCategoryScreen(

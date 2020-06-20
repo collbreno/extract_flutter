@@ -17,5 +17,7 @@ class ExpenseTableVersion1 {
       'constraint $fkCategory '
       'foreign key ($colCategoryId) '
       'references ${CategoryTableVersion1.tableName}(${CategoryTableVersion1.colId}) '
+      'on delete cascade '
+      'on update cascade '
       ')';
 }

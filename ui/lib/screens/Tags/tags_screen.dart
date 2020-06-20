@@ -10,6 +10,7 @@ class TagsScreen extends StatefulWidget {
 
 class _TagsScreenState extends State<TagsScreen> {
   final TagService _tagService = TagService();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   List<Tag> _tags = <Tag>[];
 
   @override
@@ -29,6 +30,7 @@ class _TagsScreenState extends State<TagsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Tags"),
       ),
@@ -73,10 +75,24 @@ class _TagsScreenState extends State<TagsScreen> {
     );
   }
 
+  void _showSnackBar(String text) {
+    SnackBar snackBar = SnackBar(
+      content: Text(
+        text,
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
   void _handleAction(BuildContext context, String action, Tag tag) {
     if (action == Actions.delete) {
-      _tagService.deleteTagWithId(tag.id);
-      _fetchTags();
+      _tagService.deleteTagWithId(tag.id).then((value) {
+        _showSnackBar("Categoria deletada com sucesso");
+        _fetchTags();
+      }).catchError((Object error) {
+        print(error);
+        _showSnackBar("Algo deu errado");
+      });
     } else if (action == Actions.edit) {
       AppNavigator.pushNewTagScreen(
         context,

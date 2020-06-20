@@ -13,8 +13,13 @@ class ExpenseTagsTableVersion1 {
       'primary key ($colTagId,$colExpenseId),'
       'constraint $fkExpense '
       'foreign key ($colExpenseId) '
-      'references ${ExpenseTableVersion1.tableName}(${ExpenseTableVersion1.colId}), '
+      'references ${ExpenseTableVersion1.tableName}(${ExpenseTableVersion1.colId}) '
+      'on update cascade '
+      'on delete cascade, '
       'constraint $fkTag '
       'foreign key ($colTagId) '
-      'references ${TagTableVersion1.tableName}(${TagTableVersion1.colId}) )' ;
+      'references ${TagTableVersion1.tableName}(${TagTableVersion1.colId}) '
+      'on update cascade '
+      'on delete cascade '
+      ')' ;
 }

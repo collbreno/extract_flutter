@@ -37,4 +37,6 @@ class DatabaseHelper {
       await db.execute(ExpenseTagsTableVersion1.createScript);
     }
   }
+
+  
 }
