@@ -63,4 +63,5 @@ class TagRepository {
         .map((Map<String, dynamic> tagMap) => TagEntity.fromObject(tagMap))
         .toList();
   }
+
 }

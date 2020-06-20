@@ -48,4 +48,14 @@ class ExpenseTagsRepository {
             ExpenseTagsEntity.fromObject(expenseTagsMap))
         .toList();
   }
+
+  Future<int> getUsagesOfTag(int tagId) async {
+    Database database = await _databaseHelper.database;
+    List<Map<String, dynamic>> list = await database.rawQuery(
+      'select count(*)from ${ExpenseTagsEntity.tableName} '
+          'where ${ExpenseTagsEntity.colTagId} = $tagId',
+    );
+    int amount = Sqflite.firstIntValue(list);
+    return amount;
+  }
 }

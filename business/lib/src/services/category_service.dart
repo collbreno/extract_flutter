@@ -28,4 +28,10 @@ class CategoryService {
   Future<int> updateCategory(Category category) async {
     return await _repository.updateCategory(category.toEntity());
   }
+
+  Future<int> getUsagesOfCategory(int categoryId) async {
+    int result = await _repository.getUsagesOfCategory(categoryId);
+    return result ?? 0;
+  }
+
 }

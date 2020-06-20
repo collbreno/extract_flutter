@@ -55,4 +55,14 @@ class CategoryRepository {
     }
     return null;
   }
+
+  Future<int> getUsagesOfCategory(int categoryId) async {
+    Database database = await _databaseHelper.database;
+    List<Map<String, dynamic>> list = await database.rawQuery(
+      'select count(*) from ${ExpenseEntity.tableName} '
+      'where ${ExpenseEntity.colCategoryId} = $categoryId',
+    );
+    int amount = Sqflite.firstIntValue(list);
+    return amount;
+  }
 }

@@ -55,7 +55,8 @@ class ExpenseService {
   }
 
   Future<int> getTotalValueFromMonth() async {
-    return await _expenseRepository.getTotalValueFromMonth();
+    int result = await _expenseRepository.getTotalValueFromMonth();
+    return result ?? 0;
   }
 
 }

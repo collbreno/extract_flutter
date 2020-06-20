@@ -2,24 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5ff955bf-be5a-4a4b-a03c-92448a3b50cc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/business/lib/src/services/backup_service.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/infrastructure/lib/src/repositories/backup_repository.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/lib/screens/BackupScreen/backup_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/business/lib/business.dart" beforeDir="false" afterPath="$PROJECT_DIR$/business/lib/business.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/lib/infrastructure.dart" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lib/infrastructure.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/lib/src/database_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lib/src/database_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/lib/src/scripts/version1/expense_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lib/src/scripts/version1/expense_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/lib/src/scripts/version1/expense_tags_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lib/src/scripts/version1/expense_tags_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/lib/helpers/navigator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/helpers/navigator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/business/lib/src/services/category_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/business/lib/src/services/category_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/business/lib/src/services/expense_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/business/lib/src/services/expense_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/business/lib/src/services/tag_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/business/lib/src/services/tag_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infrastructure/lib/src/repositories/category_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lib/src/repositories/category_repository.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infrastructure/lib/src/repositories/expense_tags_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lib/src/repositories/expense_tags_repository.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infrastructure/lib/src/repositories/tag_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lib/src/repositories/tag_repository.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/lib/screens/Categories/categories_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/Categories/categories_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/lib/screens/Home/homeScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/Home/homeScreen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/lib/screens/Tags/tags_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/ui/lib/screens/Tags/tags_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/ui/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/ui/pubspec.yaml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
