@@ -6,7 +6,7 @@ import 'package:ui/screens/NewCategory/title_text_field.dart';
 import 'package:ui/screens/NewTag/color_picker_button.dart';
 
 class NewTagScreen extends StatefulWidget {
-  const NewTagScreen({
+  NewTagScreen({
     Key key,
     this.onDispose,
     this.tag,
@@ -60,32 +60,46 @@ class _NewTagScreenState extends State<NewTagScreen> {
   }
 
   void _insertTag() async {
-    Tag tagToInsert = _tag;
-    String keyWordOnSuccess = tagToInsert.id == null ? 'criada' : 'editada';
-    String keyWordOnFail = tagToInsert.id == null ? 'criar' : 'editar';
+    String keyWordOnSuccess = _tag.id == null ? 'criada' : 'editada';
+    String keyWordOnFail = _tag.id == null ? 'criar' : 'editar';
     int response;
-    if (tagToInsert.id == null) {
-      response = await _tagService.insert(tagToInsert);
-    } else {
-      response = await _tagService.updateTag(tagToInsert);
+    try {
+      if (_tag.id == null) {
+        response = await _tagService.insert(_tag);
+      } else {
+        response = await _tagService.updateTag(_tag);
+      }
+      if (response != null && response > 0) {
+        _resetFields();
+        _showSnackBar("Tag $keyWordOnSuccess com sucesso!");
+        if (widget.closeOnSave) Navigator.pop(context);
+      } else {
+        _showErrorSnackBar("Algo deu errado ao $keyWordOnFail tag");
+      }
+    } catch (e) {
+      print(e);
+      _showErrorSnackBar("Algo deu errado ao $keyWordOnFail tag");
     }
-    if (response != null && response > 0) {
-      _resetFields();
-      SnackBar snackBar = SnackBar(
-        content: Text("Tag $keyWordOnSuccess com sucesso"),
-      );
-      _scaffoldKey.currentState.showSnackBar(snackBar);
-      if (widget.closeOnSave) Navigator.pop(context);
-    } else {
-      SnackBar snackBar = SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "Algo deu errado ao $keyWordOnFail tag",
-          style: TextStyle(color: Colors.white),
-        ),
-      );
-      _scaffoldKey.currentState.showSnackBar(snackBar);
-    }
+  }
+
+  void _showErrorSnackBar(String text) {
+    SnackBar snackBar = SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        text,
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  void _showSnackBar(String text) {
+    SnackBar snackBar = SnackBar(
+      content: Text(
+        text,
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   void _resetFields() {
@@ -118,6 +132,7 @@ class _NewTagScreenState extends State<NewTagScreen> {
         backgroundColor: _tag.color,
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         children: <Widget>[
           Center(child: TagChip(_tag)),

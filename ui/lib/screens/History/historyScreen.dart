@@ -34,24 +34,28 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
         ),
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        itemCount: _expenses.length,
-        itemBuilder: (context, index) {
-          return ExpenseCard(
-            expense: _expenses.elementAt(index),
-            onDatabaseChange: () => _fetchFromDatabase(),
-          );
-        },
+      body: RefreshIndicator(
+        onRefresh: _fetchFromDatabase,
+        child: Scrollbar(
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            itemCount: _expenses.length,
+            itemBuilder: (context, index) {
+              return ExpenseCard(
+                expense: _expenses.elementAt(index).copy(),
+                onDatabaseChange: () => _fetchFromDatabase(),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
 
-  void _fetchFromDatabase() {
-    _expenseService.getExpenses().then((expenses) {
-      setState(() {
-        _expenses = expenses;
-      });
+  Future<void> _fetchFromDatabase() async {
+    var expenses = await _expenseService.getExpenses();
+    setState(() {
+      _expenses = expenses;
     });
   }
 }

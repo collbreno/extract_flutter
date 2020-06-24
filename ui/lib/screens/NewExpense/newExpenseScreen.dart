@@ -12,35 +12,62 @@ import 'date_button.dart';
 import 'description_text_field.dart';
 
 class NewExpenseScreen extends StatefulWidget {
+  final Expense expense;
+  final void Function() onDispose;
+  final bool closeOnSave;
+
+  NewExpenseScreen({
+    Key key,
+    this.expense,
+    this.onDispose,
+    this.closeOnSave,
+  }) : super(key: key);
+
   @override
   _NewExpenseScreenState createState() => _NewExpenseScreenState();
 }
 
 class _NewExpenseScreenState extends State<NewExpenseScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  ExpenseService _expenseService = ExpenseService();
-  CategoryService _categoryService = CategoryService();
-  List<Tag> _selectedTags = List<Tag>();
+  ExpenseService _expenseService;
+  CategoryService _categoryService;
   List<Category> _categories = List<Category>();
-  Category _selectedCategory;
   TextEditingController _descriptionController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  int _value = 0;
   bool _valueHasError = false;
   bool _categoryHasError = false;
   bool _descriptionHasError = false;
+  Expense _expense;
 
   @override
   void initState() {
     super.initState();
+    _expenseService = ExpenseService();
+    _categoryService = CategoryService();
     _fetchCategories();
+    _expense = widget.expense ??
+        Expense(
+          description: '',
+          tags: List<Tag>(),
+          date: DateTime.now(),
+          value: 0,
+        );
+    _descriptionController.text = _expense.description;
     _descriptionController.addListener(() {
       if (_descriptionController.text.isNotEmpty) {
         setState(() {
           _descriptionHasError = false;
+          _expense.description = _descriptionController.text;
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    print('rodando dispose');
+    if (widget.onDispose != null) widget.onDispose();
+    super.dispose();
   }
 
   @override
@@ -51,21 +78,38 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
         title: Text('Novo gasto'),
       ),
       body: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         children: <Widget>[
           ValueButton(
-            value: _value,
-            onTap: _showCalculator,
+            value: _expense.value,
+            onValueChanged: (value) {
+              setState(() {
+                _expense.value = value;
+                _valueHasError = false;
+              });
+            },
             hasError: _valueHasError,
           ),
           CategoryButton(
-            category: _selectedCategory,
-            onTap: _showCategoryPicker,
+            selectedCategory: _expense.category,
+            onCategorySelected: (category) {
+              setState(() {
+                _expense.category = category;
+                _categoryHasError = false;
+              });
+            },
+            categories: _categories,
+            onCreateCategory: _createCategory,
             hasError: _categoryHasError,
           ),
           DateButton(
-            date: _selectedDate,
-            onTap: _showDatePicker,
+            selectedDate: _expense.date,
+            onDateSelected: (date) {
+              setState(() {
+                _expense.date = date;
+              });
+            },
           ),
           DescriptionTextField(
             controller: _descriptionController,
@@ -82,24 +126,27 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
   }
 
   void _checkFieldsAndInsert() {
+    setState(() {
+      _expense.description = _descriptionController.text;
+    });
     bool valid = true;
-    if (_value <= 0) {
+    if (_expense.value <= 0) {
       valid = false;
       _setValueError(true);
     }
-    if (_selectedCategory == null) {
+    if (_expense.category == null) {
       valid = false;
       _setCategoryError(true);
     }
-    if (_selectedDate == null) {
+    if (_expense.date == null) {
       valid = false;
     }
-    if (_descriptionController.text.isEmpty) {
+    if (_expense.description.isEmpty) {
       valid = false;
       _setDescriptionError(true);
     }
     if (valid) {
-      _insertCategory();
+      _insertExpense();
     } else {
       print('nao valido');
     }
@@ -114,31 +161,47 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
   void _setDescriptionError(bool hasError) =>
       setState(() => _descriptionHasError = hasError);
 
-  void _insertCategory() async {
-    var expenseToInsert = Expense(
-      value: _value,
-      date: _selectedDate,
-      description: _descriptionController.text.trim(),
-      category: _selectedCategory,
-      tags: _selectedTags,
-    );
-    var result = await _expenseService.insertExpense(expenseToInsert);
-    if (result != null && result > 0) {
-      _resetFields();
-      SnackBar snackBar = SnackBar(
-        content: Text("Gasto criado com sucesso"),
-      );
-      _scaffoldKey.currentState.showSnackBar(snackBar);
-    } else {
-      SnackBar snackBar = SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(
-          "Algo deu errado ao criar gasto",
-          style: TextStyle(color: Colors.white),
-        ),
-      );
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+  void _insertExpense() async {
+    String keywordOnSuccess = _expense.id == null ? 'criada' : 'editada';
+    String keywordOnFail = _expense.id == null ? 'criar' : 'editar';
+    int response;
+    try {
+      if (_expense.id == null) {
+        response = await _expenseService.insertExpense(_expense);
+      } else {
+        response = await _expenseService.updateExpense(_expense);
+      }
+      if (response != null && response > 0) {
+        _resetFields();
+        _showSnackBar("Gasto $keywordOnSuccess com sucesso");
+        if (widget.closeOnSave) Navigator.pop(context);
+      } else {
+        _showErrorSnackBar("Algo deu errado ao $keywordOnFail gasto");
+      }
+    } catch (error) {
+      print(error);
+      _showErrorSnackBar("Algo deu errado ap $keywordOnFail gasto");
     }
+  }
+
+  void _showErrorSnackBar(String text) {
+    SnackBar snackBar = SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        text,
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  void _showSnackBar(String text) {
+    SnackBar snackBar = SnackBar(
+      content: Text(
+        text,
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   Widget _renderSaveButton() {
@@ -161,7 +224,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
       child: Wrap(
         alignment: WrapAlignment.start,
         crossAxisAlignment: WrapCrossAlignment.start,
-        children: _selectedTags.map((tag) {
+        children: _expense.tags.map((tag) {
           return Padding(
             padding: EdgeInsets.all(2),
             child: TagChip(tag),
@@ -171,97 +234,31 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
     );
   }
 
-  void _showCalculator() {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return Calculator(
-          onSubmit: (result) {
-            setState(() {
-              if (result > 0) {
-                _valueHasError = false;
-              }
-              _value = result;
-            });
-          },
-        );
-      },
-    );
-  }
-
   void _updateTags(List<Tag> newTags) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _selectedTags = newTags;
+        _expense.tags = newTags;
       });
     });
   }
 
   void _showTagScreen() {
-    AppNavigator.pushAddTagScreen(context, _selectedTags, _updateTags);
+    AppNavigator.pushAddTagScreen(context, _expense.tags, _updateTags);
   }
 
   void _resetFields() {
     setState(() {
-      _value = 0;
+      _expense.id = null;
+      _expense.tags = List<Tag>();
+      _expense.category = null;
+      _expense.description = '';
+      _expense.value = 0;
+      _expense.date = DateTime.now();
       _descriptionController.text = '';
-      _selectedCategory = null;
-      _selectedTags = List<Tag>();
-      _selectedDate = DateTime.now();
       _descriptionHasError = false;
       _valueHasError = false;
       _categoryHasError = false;
     });
-  }
-
-  void _showDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2010),
-      lastDate: DateTime(2030),
-    ).then((date) {
-      if (date != null) {
-        setState(() {
-          _selectedDate = date;
-        });
-      }
-    });
-  }
-
-  void _showCategoryPicker() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return PickerDialog<Category>(
-          title: "Selecione a categoria",
-          items: _categories,
-          onSearch: (category, text) => category.title.toUpperCase().contains(text.toUpperCase()),
-          footer: ListTile(
-            title: Text("Nova categoria"),
-            leading: Icon(Icons.add),
-            onTap: _createCategory,
-          ),
-          onItemSelected: (category) {
-            setState(() {
-              _categoryHasError = false;
-              _selectedCategory = category;
-            });
-          },
-          renderer: (category) {
-            return ListTile(
-              leading: Icon(
-                category.icon,
-                color: category.color,
-              ),
-              title: Text(category.title),
-            );
-          },
-        );
-      },
-    );
   }
 
   void _createCategory() {

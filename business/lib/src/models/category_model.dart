@@ -34,4 +34,17 @@ class Category {
       iconFontPackage: icon.fontPackage,
     );
   }
+
+  Category copy({
+    int id,
+    String title,
+    Color color,
+    IconData icon,
+  }) =>
+      Category(
+        id: id ?? this.id,
+        color: color ?? this.color,
+        title: title ?? this.title,
+        icon: icon ?? this.icon,
+      );
 }

@@ -171,7 +171,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   void _editCategory(Category category) {
     AppNavigator.pushNewCategoryScreen(
       context,
-      category: category,
+      category: category.copy(),
       onDispose: _fetchCategories,
       closeOnSave: true,
     );

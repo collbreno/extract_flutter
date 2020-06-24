@@ -170,7 +170,7 @@ class _TagsScreenState extends State<TagsScreen> {
   void _editTag(Tag tag) {
     AppNavigator.pushNewTagScreen(
       context,
-      tag: tag,
+      tag: tag.copy(),
       onDispose: _fetchTags,
       closeOnSave: true,
     );

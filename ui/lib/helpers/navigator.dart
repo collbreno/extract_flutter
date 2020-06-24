@@ -12,14 +12,29 @@ import 'package:ui/screens/NewTag/new_tag_screen.dart';
 import 'package:ui/screens/Tags/tags_screen.dart';
 
 class AppNavigator {
-  static void pushNewExpenseScreen(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => NewExpenseScreen()));
+  static void pushNewExpenseScreen(
+    BuildContext context, {
+    void Function() onDispose,
+    Expense expense,
+    bool closeOnSave = false,
+  }) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => NewExpenseScreen(
+          closeOnSave: closeOnSave,
+          onDispose: onDispose,
+          expense: expense,
+        ),
+      ),
+    );
   }
 
   static void pushBackupScreen(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => BackupScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BackupScreen(),
+      ),
+    );
   }
 
   static void pushNewCategoryScreen(
@@ -57,26 +72,35 @@ class AppNavigator {
   }
 
   static void pushHistoryScreen(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => HistoryScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => HistoryScreen(),
+      ),
+    );
   }
 
   static void pushAddTagScreen(
       BuildContext context, List<Tag> tags, void Function(List<Tag>) onUpdate) {
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => AddTagScreen(tags, onUpdate)));
+      MaterialPageRoute(
+        builder: (context) => AddTagScreen(tags, onUpdate),
+      ),
+    );
   }
 
-  static void pushDetailTagScreen(
+  static void pushExpenseDetailScreen(
     BuildContext context, {
     Expense expense,
     void Function() onDatabaseChange,
   }) {
-    Navigator.of(context).push(MaterialPageRoute(
+    Navigator.of(context).push(
+      MaterialPageRoute(
         builder: (context) => ExpenseDetailScreen(
-              expense: expense,
-              onDatabaseChange: onDatabaseChange,
-            )));
+          expense: expense,
+          onDatabaseChange: onDatabaseChange,
+        ),
+      ),
+    );
   }
 
   static void pushCategoriesScreen(BuildContext context) {

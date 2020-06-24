@@ -47,4 +47,21 @@ class Expense {
       return ExpenseTagsEntity(expenseId: id, tagId: tag.id);
     })?.toList();
   }
+
+  Expense copy({
+    int id,
+    int value,
+    String description,
+    DateTime date,
+    Category category,
+    List<Tag> tags,
+  }) =>
+      Expense(
+        id: id ?? this.id,
+        value: value ?? this.value,
+        date: date ?? this.date,
+        tags: tags ?? this.tags.toList(),
+        description: description ?? this.description,
+        category: category ?? this.category.copy(),
+      );
 }

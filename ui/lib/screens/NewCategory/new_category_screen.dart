@@ -74,6 +74,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         key: _scaffoldKey,
         appBar: renderAppBar(),
         body: ListView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           children: <Widget>[
             TitleTextField(

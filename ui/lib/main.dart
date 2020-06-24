@@ -7,7 +7,7 @@ import 'screens/Home/homeScreen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   initializeDateFormatting('pt_BR');
-  runAppSpector();
+  //runAppSpector();
   runApp(MaterialApp(home: HomeScreen()));
 }
 

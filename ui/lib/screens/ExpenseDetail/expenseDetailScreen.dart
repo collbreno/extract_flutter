@@ -2,14 +2,32 @@ import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ui/components/TagChip.dart';
+import 'package:ui/helpers/money_helper.dart';
 import 'package:ui/helpers/navigator.dart';
 
-class ExpenseDetailScreen extends StatelessWidget {
-  ExpenseDetailScreen({this.expense, this.onDatabaseChange});
+class ExpenseDetailScreen extends StatefulWidget {
+  ExpenseDetailScreen({
+    this.expense,
+    this.onDatabaseChange,
+  });
 
   final Expense expense;
   final void Function() onDatabaseChange;
+
+  @override
+  _ExpenseDetailScreenState createState() => _ExpenseDetailScreenState();
+}
+
+class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
+
   final ExpenseService _expenseService = ExpenseService();
+  Expense expense;
+
+  @override
+  void initState() {
+    expense = widget.expense;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +73,13 @@ class ExpenseDetailScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: RefreshIndicator(
+        onRefresh: _fetchExpense,
+        child: ListView(
+          padding: EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10,
+          ),
           children: <Widget>[
             ListTile(
               leading: Icon(Icons.attach_money),
@@ -66,7 +87,7 @@ class ExpenseDetailScreen extends StatelessWidget {
                   tag: getHeroTag('value'),
                   child: Material(
                       type: MaterialType.transparency,
-                      child: Text(formatCash(expense.value)))),
+                      child: Text(MoneyHelper.formatCash(expense.value)))),
             ),
             ListTile(
               leading: Hero(
@@ -90,7 +111,11 @@ class ExpenseDetailScreen extends StatelessWidget {
               title: Text(expense.description),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+              padding: EdgeInsets.only(
+                left: 20.0,
+                right: 20.0,
+                top: 15.0,
+              ),
               child: Wrap(
                 runSpacing: 4,
                 spacing: 4,
@@ -109,13 +134,28 @@ class ExpenseDetailScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _fetchExpense() async {
+    Expense newExpense = await _expenseService.getExpenseWithId(expense.id);
+    setState(() {
+      expense = newExpense.copy();
+    });
+  }
+
   void _handleAction(BuildContext context, String action) async {
     if (action == Actions.delete) {
       _expenseService.deleteExpenseWithId(expense.id);
-      onDatabaseChange();
+      widget.onDatabaseChange();
       Navigator.pop(context);
     } else if (action == Actions.edit) {
-      print('cliquei em editar');
+      AppNavigator.pushNewExpenseScreen(
+        context,
+        onDispose: () {
+          _fetchExpense();
+          widget.onDatabaseChange();
+        },
+        closeOnSave: true,
+        expense: expense.copy(),
+      );
     }
   }
 
@@ -123,9 +163,6 @@ class ExpenseDetailScreen extends StatelessWidget {
     return "${expense.id}_$tag";
   }
 
-  String formatCash(int value) {
-    return "R\$ " + (value.toDouble() / 100).toStringAsFixed(2);
-  }
 }
 
 class Actions {

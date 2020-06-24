@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:business/business.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:ui/helpers/money_helper.dart';
 import 'package:ui/helpers/navigator.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -20,10 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _expenseService.getTotalValueFromMonth().then((value) {
-      setState(() {
-        totalValue = value;
-      });
+    _fetchValue();
+  }
+
+  Future<void> _fetchValue() async {
+    int result = await _expenseService.getTotalValueFromMonth();
+    setState(() {
+      totalValue = result ?? 0;
     });
   }
 
@@ -50,14 +54,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 AppNavigator.pushTagsScreen(context);
               },
             ),
-            ListTile(
-              title: Text("Rodar script SQL"),
-              leading: Icon(Icons.adb),
-              onTap: () {
-                Navigator.pop(context);
-                AppNavigator.pushBackupScreen(context);
-              },
-            ),
+            // ListTile(
+            //   title: Text("Rodar script SQL"),
+            //   leading: Icon(Icons.adb),
+            //   onTap: () {
+            //     Navigator.pop(context);
+            //     AppNavigator.pushBackupScreen(context);
+            //   },
+            // ),
           ],
         ),
       ),
@@ -67,35 +71,48 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Icon(Icons.add),
       ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 42.0),
-            child: Text(
-              "Total gasto esse mês $totalValue",
-              textAlign: TextAlign.center,
-            ),
-          ),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
-            children: <Widget>[
-              HomeScreenButton(
-                icon: Icons.add,
-                onPress: () => AppNavigator.pushNewCategoryScreen(context),
-                title: "Nova Categoria",
+      body: RefreshIndicator(
+        onRefresh: _fetchValue,
+        child: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 36.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Total gasto esse mês:",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    MoneyHelper.formatCash(totalValue),
+                    style: TextStyle(fontSize: 18),
+                  )
+                ],
               ),
-              HomeScreenButton(
-                icon: Icons.history,
-                title: "Histórico",
-                onPress: () => AppNavigator.pushHistoryScreen(context),
-              )
-            ],
-          ),
-        ],
+            ),
+            GridView.count(
+              crossAxisCount: 2,
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
+              children: <Widget>[
+                HomeScreenButton(
+                  icon: Icons.add,
+                  onPress: () => AppNavigator.pushNewCategoryScreen(context),
+                  title: "Nova Categoria",
+                ),
+                HomeScreenButton(
+                  icon: Icons.history,
+                  title: "Histórico",
+                  onPress: () => AppNavigator.pushHistoryScreen(context),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

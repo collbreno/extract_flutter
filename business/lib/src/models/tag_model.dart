@@ -40,7 +40,21 @@ class Tag {
         iconFontPackage: icon?.fontPackage);
   }
 
+  Tag copy({
+    int id,
+    String title,
+    Color color,
+    Color textColor,
+    IconData icon,
+  }) =>
+      Tag(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        color: color ?? this.color,
+        textColor: textColor ?? this.textColor,
+        icon: icon ?? this.icon,
+      );
+
   static Color DEFAULT_COLOR = Colors.grey[400];
   static const Color DEFAULT_TEXT_COLOR = Colors.black;
-
 }
