@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:infrastructure/infrastructure.dart';
+import 'package:infrastructure/src/entities/category_with_value_entity.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CategoryRepository {
@@ -54,6 +55,21 @@ class CategoryRepository {
       return CategoryEntity.fromObject(list.first);
     }
     return null;
+  }
+
+  Future<List<CategoryWithValueEntity>> getCategoriesWithTotalValue() async {
+    Database database = await _databaseHelper.database;
+    List<Map<String, dynamic>> query = await database.rawQuery(
+      'select * from ${CategoryEntity.tableName} natural join ('
+          'select ${CategoryEntity.colId}, '
+          'sum(${ExpenseEntity.colValue}) as ${CategoryWithValueEntity.colTotalValue} '
+          'from ${CategoryWithValueEntity.tableName} group by ${CategoryEntity.colId}'
+          ')'
+    );
+    return query
+        .map((Map<String, dynamic> categoryMap) =>
+            CategoryWithValueEntity.fromObject(categoryMap))
+        .toList();
   }
 
   Future<int> getUsagesOfCategory(int categoryId) async {
