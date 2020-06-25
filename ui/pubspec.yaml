@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   sqflite: any
+  charts_flutter: ^0.9.0
   path_provider: any
   intl: ^0.15.7
   file_picker: ^1.10.0

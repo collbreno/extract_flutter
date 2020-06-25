@@ -13,6 +13,16 @@ class CategoryService {
         .toList();
   }
 
+  Future<Map<Category, int>> getCategoriesWithTotalValue() async {
+    List<CategoryWithValueEntity> categoriesWithValueEntity =
+        await _repository.getCategoriesWithTotalValue();
+    return Map<Category, int>.fromIterable(
+      categoriesWithValueEntity,
+      key: (entity) => Category.fromEntity(entity),
+      value: (entity) => entity.totalValue,
+    );
+  }
+
   Future<Category> getCategoryWithId(int categoryId) async {
     return Category.fromEntity(await _repository.getCategoryWithId(categoryId));
   }
@@ -33,5 +43,4 @@ class CategoryService {
     int result = await _repository.getUsagesOfCategory(categoryId);
     return result ?? 0;
   }
-
 }

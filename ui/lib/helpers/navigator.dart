@@ -12,6 +12,17 @@ import 'package:ui/screens/NewTag/new_tag_screen.dart';
 import 'package:ui/screens/Tags/tags_screen.dart';
 
 class AppNavigator {
+  static void push(
+    BuildContext context,
+    Widget screen,
+  ) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => screen,
+      ),
+    );
+  }
+
   static void pushNewExpenseScreen(
     BuildContext context, {
     void Function() onDispose,

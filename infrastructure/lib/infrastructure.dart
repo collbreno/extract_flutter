@@ -5,6 +5,7 @@ export 'src/database_helper.dart';
 export 'src/entities/category_entity.dart';
 export 'src/entities/expense_entity.dart';
 export 'src/entities/expense_tags.entity.dart';
+export 'src/entities/category_with_value_entity.dart';
 export 'src/entities/tag_entity.dart';
 export 'src/repositories/category_repository.dart';
 export 'src/repositories/backup_repository.dart';

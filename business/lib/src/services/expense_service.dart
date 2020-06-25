@@ -37,7 +37,8 @@ class ExpenseService {
         .map((Tag tag) => ExpenseTagsEntity(
               tagId: tag.id,
               expenseId: expense.id,
-            )).toList();
+            ))
+        .toList();
     List<ExpenseTagsEntity> expenseTagsToDelete = tagsIdInDatabase
         .where(
           (int tagId) => !expense.tags.map((Tag tag) => tag.id).contains(tagId),
@@ -61,7 +62,8 @@ class ExpenseService {
   Future<List<Expense>> getExpenses() async {
     List<ExpenseEntity> expenseEntities =
         await _expenseRepository.getExpenses();
-    return Future.wait(expenseEntities.map((ExpenseEntity expenseEntity) async {
+    return await Future.wait(
+        expenseEntities.map((ExpenseEntity expenseEntity) async {
       return Expense.fromEntities(
         expenseEntity: expenseEntity,
         categoryEntity: await _categoryRepository
